@@ -9,6 +9,14 @@ services:
       - -c
       - |
         mkdir -p /data/certbot/conf /data/certbot/www
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 168h & wait $${!}; done;'"
+    command: "certonly --webroot --webroot-path=/var/www/certbot --email d_maximyuk@icloud.com --agree-tos --no-eff-email --domains dev.e-frontend.ru"
+
   backend:
     build:
       context: .
@@ -27,11 +35,3 @@ services:
       - "443:443"
     depends_on:
       - backend
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 168h & wait $${!}; done;'"
-    command: "certonly --webroot --webroot-path=/var/www/certbot --email d_maximyuk@icloud.com --agree-tos --no-eff-email --domains dev.e-frontend.ru"
