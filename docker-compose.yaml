@@ -47,6 +47,7 @@ services:
       - "443:443"
     depends_on:
       - backend
+    entrypoint: /bin/sh -c 'while ! nc -z backend 8080; do sleep 1; done; nginx -g "daemon off;"'
 
 networks:
   backend-net:
