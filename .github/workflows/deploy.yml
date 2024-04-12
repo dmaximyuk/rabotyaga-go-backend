@@ -19,10 +19,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            script: |
-            if [ ! -d "/backend/.git" ]; then
-              git clone git@github.com:dmaximyuk/rabotyaga-go-backend.git backend
-            fi
+            git clone git@github.com:dmaximyuk/rabotyaga-go-backend.git backend
             cd /backend
             git pull
             docker build -t backend .
