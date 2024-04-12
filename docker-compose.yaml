@@ -9,6 +9,14 @@ services:
       - -c
       - |
         mkdir -p /data/certbot/conf /data/certbot/www
+        if [ ! -f /data/certbot/conf/options-ssl-nginx.conf ]; then
+          echo "ssl_protocols TLSv1.2 TLSv1.3;" > /data/certbot/conf/options-ssl-nginx.conf
+          echo "ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';" >> /data/certbot/conf/options-ssl-nginx.conf
+          echo "ssl_prefer_server_ciphers on;" >> /data/certbot/conf/options-ssl-nginx.conf
+          echo "ssl_session_cache shared:SSL:10m;" >> /data/certbot/conf/options-ssl-nginx.conf
+          echo "ssl_session_tickets off;" >> /data/certbot/conf/options-ssl-nginx.conf
+        fi
+
   certbot:
     image: certbot/certbot
     volumes:
