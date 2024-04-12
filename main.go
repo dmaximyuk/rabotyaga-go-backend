@@ -15,7 +15,9 @@ func main() {
 			return
 		}
 
-		go events.Listen(conn)
+		var e = events.Events{conn}
+
+		go e.New()
 	}))
 
 	if err != nil {

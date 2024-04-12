@@ -6,15 +6,21 @@ import (
 	"fmt"
 	"github.com/gobwas/ws/wsutil"
 	"net"
+	"rabotyaga-go-backend/api/realtime"
+	"rabotyaga-go-backend/utlis"
 	"time"
 )
+
+type Events struct {
+	Conn net.Conn
+}
 
 type EventParams struct {
 	Event string          `json:"event"`
 	Data  json.RawMessage `json:"data"`
 }
 
-func routing(msg []byte) ([]byte, error) {
+func (e *Events) Listener(msg []byte) ([]byte, error) {
 	var params EventParams
 
 	if len(msg) < 20 {
@@ -26,18 +32,20 @@ func routing(msg []byte) ([]byte, error) {
 	}
 
 	switch params.Event {
-	case "test":
-		return []byte("Work!"), nil
+	case "ping":
+		data := realtime.Ping()
+		message := utlis.EventStructToByte(data)
+		return message, nil
 	default:
 		return []byte(""), errors.New("event error")
 	}
 }
 
-func Listen(conn net.Conn) {
+func (e *Events) New() {
 	defer func() {
-		logInfo := fmt.Sprintf("[ %d ]: connection closed, address: %s", time.Now().Unix(), conn.RemoteAddr())
+		logInfo := fmt.Sprintf("[ %d ]: connection closed, address: %s", time.Now().Unix(), e.Conn.RemoteAddr())
 
-		err := conn.Close()
+		err := e.Conn.Close()
 		fmt.Println(logInfo)
 
 		if err != nil {
@@ -46,18 +54,18 @@ func Listen(conn net.Conn) {
 	}()
 
 	for {
-		msg, op, err := wsutil.ReadClientData(conn)
+		msg, op, err := wsutil.ReadClientData(e.Conn)
 		if err != nil {
 			break
 		}
 
-		msg, err = routing(msg)
+		msg, err = e.Listener(msg)
 		if err != nil {
 			fmt.Println(err)
 			break
 		}
 
-		if err := wsutil.WriteServerMessage(conn, op, msg); err != nil {
+		if err := wsutil.WriteServerMessage(e.Conn, op, msg); err != nil {
 			break
 		}
 	}
