@@ -1,30 +1,5 @@
 version: '3.8'
 services:
-  prepare:
-    image: alpine
-    volumes:
-      - ./data/certbot:/data/certbot
-    command:
-      - sh
-      - -c
-      - |
-        mkdir -p /data/certbot/conf /data/certbot/www
-        if [ ! -f /data/certbot/conf/options-ssl-nginx.conf ]; then
-          echo "ssl_protocols TLSv1.2 TLSv1.3;" > /data/certbot/conf/options-ssl-nginx.conf
-          echo "ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';" >> /data/certbot/conf/options-ssl-nginx.conf
-          echo "ssl_prefer_server_ciphers on;" >> /data/certbot/conf/options-ssl-nginx.conf
-          echo "ssl_session_cache shared:SSL:10m;" >> /data/certbot/conf/options-ssl-nginx.conf
-          echo "ssl_session_tickets off;" >> /data/certbot/conf/options-ssl-nginx.conf
-        fi
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 168h & wait $${!}; done;'"
-    command: "certonly --webroot --webroot-path=/var/www/certbot --email d_maximyuk@icloud.com --agree-tos --no-eff-email --domains dev.e-frontend.ru"
-
   backend:
     networks:
       - backend-net
@@ -34,20 +9,6 @@ services:
     ports:
       - "8080:8080"
 
-  nginx:
-    networks:
-      - backend-net
-    image: nginx:alpine
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - backend
-    entrypoint: /bin/sh -c 'while ! nc -z backend 8080; do sleep 1; done; nginx -g "daemon off;"'
-
 networks:
   backend-net:
+    driver: bridge
