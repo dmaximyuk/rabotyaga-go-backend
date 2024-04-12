@@ -19,8 +19,19 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            git clone git@github.com:dmaximyuk/rabotyaga-go-backend.git backend
+            if [ ! -d "/backend/.git" ]; then
+              git clone git@github.com:dmaximyuk/rabotyaga-go-backend.git /backend
+            fi
+            
             cd /backend
-            git pull
+            
+            if git rev-parse --git-dir > /dev/null 2>&1; then
+              git pull
+            else
+              echo "Ошибка: Каталог /backend не является Git репозиторием."
+              exit 1
+            fi
+            
             docker build -t backend .
             docker-compose up -d
+
