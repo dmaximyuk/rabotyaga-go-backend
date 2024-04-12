@@ -19,7 +19,11 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            mkdir -p /backend && cd /backend
+            script: |
+            if [ ! -d "/backend/.git" ]; then
+              git clone https://github.com/username/repo.git /backend
+            fi
+            cd /backend
             git pull
             docker build -t backend .
             docker-compose up -d
