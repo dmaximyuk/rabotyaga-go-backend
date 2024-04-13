@@ -36,5 +36,5 @@ jobs:
             docker load < /tmp/backend.tar.gz
             docker stop backend || true
             docker rm backend || true
-            docker -p 3001:3001 run -d --name backend backend:latest
+            docker run -p 3001:3001 -d --name backend backend:latest
 
