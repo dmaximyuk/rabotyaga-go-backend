@@ -32,6 +32,8 @@ jobs:
               exit 1
             fi
             
-            docker build -t backend .
-            docker run -d -p 80:80 -p 443:443 backend
+            go build -o ./backend
+            fuser -k 3001/tcp
+            ./backend
+
 
