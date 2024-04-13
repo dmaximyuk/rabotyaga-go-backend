@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gobwas/ws"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 
 func main() {
 	err := http.ListenAndServe(":3001", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Connection")
 		conn, _, _, err := ws.UpgradeHTTP(r, w)
 		if err != nil {
 			log.Panicln("Upgrade HTTP error")
