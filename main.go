@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	fmt.Println("Server started!")
 	err := http.ListenAndServe(":3001", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Connection")
 		conn, _, _, err := ws.UpgradeHTTP(r, w)
