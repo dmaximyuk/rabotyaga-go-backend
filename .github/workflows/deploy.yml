@@ -1,4 +1,4 @@
-name: CI to Server
+name: Docker Deployment
 
 on:
   push:
@@ -10,30 +10,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: SSH and Deploy
+      - name: Build and Save Docker Image
+        run: |
+          docker build -t backend:latest .
+          docker save backend:latest | gzip > backend.tar.gz
+
+      - name: Copy Docker Image to Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          source: "backend.tar.gz"
+          target: "/tmp"
+
+      - name: Load and Run Docker Image on Server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            if [ ! -d "/backend/.git" ]; then
-              git clone git@github.com:dmaximyuk/rabotyaga-go-backend.git /backend
-            fi
-            
-            cd /backend
-            
-            if git rev-parse --git-dir > /dev/null 2>&1; then
-              git pull
-            else
-              echo "Ошибка: Каталог /backend не является Git репозиторием."
-              exit 1
-            fi
-            
-            go build -o ./backend
-            fuser -k 3001/tcp
-            ./backend
-
-
+            docker load < /tmp/backend.tar.gz
+            docker stop backend || true
+            docker rm backend || true
+            docker run -d --name backend --network host backend:latest
