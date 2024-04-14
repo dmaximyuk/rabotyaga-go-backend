@@ -1,7 +1,10 @@
 package realtime
 
-import "rabotyaga-go-backend/types"
+import (
+	"rabotyaga-go-backend/structures"
+	"rabotyaga-go-backend/types"
+)
 
-func Ping() types.EventSend {
-	return types.EventSend{Event: types.ResponseEventPong}
+func Ping() (structures.EventParams, error) {
+	return structures.EventParams{Event: types.ResponsePong}, nil
 }

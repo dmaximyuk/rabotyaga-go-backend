@@ -1,10 +1,26 @@
 package types
 
-type EventSend struct {
-	Event string  `json:"event"`
-	Data  *string `json:"data"`
-}
+type EventType = string
+type ErrorMessage = string
 
 const (
-	ResponseEventPong = "pong"
+	RequestPing    EventType = "ping"
+	RequestBalance EventType = "balance"
+	RequestUser    EventType = "user"
+)
+
+const (
+	ResponsePong    EventType = "pong"
+	ResponseBalance EventType = "balance"
+	ResponseUser    EventType = "user"
+	ResponseError   EventType = "error"
+)
+
+const (
+	//ErrorMessageNil          ErrorMessage = "data is nil"
+	ErrorMessageParseData ErrorMessage = "data is nil"
+	ErrorMessageMsgLength ErrorMessage = "data is nil"
+	//ErrorMessageUidUndefined ErrorMessage = "the user ID is not defined or a conversion error has occurred"
+	ErrorMessageMissingEvent ErrorMessage = "event is missing"
+	ErrorMessageMissingData  ErrorMessage = "data is missing"
 )
