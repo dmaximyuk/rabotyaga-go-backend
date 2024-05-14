@@ -11,9 +11,16 @@ type EventParams struct {
 }
 
 type User struct {
-	UserId   uint   `json:"userId,omitempty"`
-	Username string `json:"username,omitempty"`
-	Nickname string `json:"nickname,omitempty"`
+	Id        uint   `json:"id,omitempty"`
+	UserId    uint   `json:"userId,omitempty"`
+	Username  string `json:"username,omitempty"`
+	CreatedAt uint   `json:"createdAt,omitempty"`
+	UpdatedAt uint   `json:"updatedAt,omitempty"`
+	DeletedAt uint   `json:"deletedAt,omitempty"`
+}
+
+type StartApp struct {
+	User User `json:"user,omitempty"`
 }
 
 type Error struct {

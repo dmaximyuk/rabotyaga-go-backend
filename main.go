@@ -6,9 +6,19 @@ import (
 	"log"
 	"net/http"
 	"rabotyaga-go-backend/events"
+	"rabotyaga-go-backend/mysql/database"
 )
 
 func main() {
+	database.New(database.Options{
+		Database:       "dev",
+		Username:       "root",
+		Host:           "localhost",
+		MaxConnections: 10,
+		Port:           3306,
+		Password:       "admin",
+	})
+
 	fmt.Println("Server started!")
 	err := http.ListenAndServe(":3001", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Connection")

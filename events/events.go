@@ -35,6 +35,9 @@ func (e *Events) Listener(msg []byte) ([]byte, error) {
 
 	if err == nil {
 		switch message.Event {
+		case types.RequestStartApp:
+			message, err = realtime.Ping()
+			break
 		case types.RequestPing:
 			message, err = realtime.Ping()
 			break
@@ -77,11 +80,6 @@ func (e *Events) New() {
 		}
 
 		msg, err = e.Listener(msg)
-		if err != nil {
-			err = wsutil.WriteServerMessage(e.Conn, op, msg)
-			fmt.Println(err)
-			break
-		}
 
 		err = wsutil.WriteServerMessage(e.Conn, op, msg)
 		if err != nil {

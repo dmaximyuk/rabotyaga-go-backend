@@ -3,23 +3,22 @@ package realtime
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
+	"rabotyaga-go-backend/mysql"
 	"rabotyaga-go-backend/structures"
 	"rabotyaga-go-backend/types"
 )
 
 func User(data json.RawMessage) (structures.EventParams, error) {
-	var user = structures.User{}
+	var userData = new(structures.User)
 	var err error = nil
 
-	err = json.Unmarshal(data, &user)
+	err = json.Unmarshal(data, &userData)
 	if err != nil {
 		err = errors.New(types.ErrorMessageMissingData)
 	}
 
-	fmt.Println(user.UserId)
-
 	if err == nil {
+		user, _ := mysql.USER_GET_BY_UID(userData.UserId)
 		data, _ = json.Marshal(user)
 	}
 
