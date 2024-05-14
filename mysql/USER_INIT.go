@@ -17,9 +17,12 @@ func USER_INIT(userId uint) (*structures.User, *mysql.MySQLError) {
 		user := new(structures.User)
 
 		err := request.Scan(
+			&user.Id,
 			&user.UserId,
 			&user.Username,
-			&user.Nickname,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+			&user.DeletedAt,
 		)
 
 		if err != nil {
