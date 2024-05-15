@@ -1,10 +1,15 @@
 package realtime
 
 import (
-	"rabotyaga-go-backend/structures"
-	"rabotyaga-go-backend/types"
+	"encoding/json"
+	"github.com/gobwas/ws"
+	"github.com/gobwas/ws/wsutil"
+	"net"
 )
 
-func Ping() (structures.EventParams, error) {
-	return structures.EventParams{Event: types.ResponsePong}, nil
+func Ping(conn net.Conn, code ws.OpCode, _ json.RawMessage) {
+	err := wsutil.WriteServerMessage(conn, code, []byte("Pong"))
+	if err != nil {
+		return
+	}
 }

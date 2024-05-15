@@ -6,7 +6,7 @@ import (
 	"rabotyaga-go-backend/structures"
 )
 
-func USER_GET_BY_UID(userId uint) (*structures.User, *mysql.MySQLError) {
+func USER_GET_BY_UID(userId uint) (*structures.ResponseUserGet, *mysql.MySQLError) {
 	request, err := database.MySQL.Exec("CALL USER_GET_BY_UID(?)", userId)
 	if err != nil {
 		return nil, err
@@ -14,7 +14,7 @@ func USER_GET_BY_UID(userId uint) (*structures.User, *mysql.MySQLError) {
 	defer request.Close()
 
 	if request.Next() {
-		user := new(structures.User)
+		user := new(structures.ResponseUserGet)
 
 		err := request.Scan(
 			&user.Id,

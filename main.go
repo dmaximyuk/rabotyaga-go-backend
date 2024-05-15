@@ -1,12 +1,11 @@
 package main
 
 import (
-	"fmt"
-	"github.com/gobwas/ws"
-	"log"
-	"net/http"
-	"rabotyaga-go-backend/events"
+	"rabotyaga-go-backend/api/realtime"
+	"rabotyaga-go-backend/api/realtime/user"
 	"rabotyaga-go-backend/mysql/database"
+	"rabotyaga-go-backend/server"
+	"rabotyaga-go-backend/types"
 )
 
 func main() {
@@ -19,22 +18,11 @@ func main() {
 		Password:       "admin",
 	})
 
-	fmt.Println("Server started!")
-	err := http.ListenAndServe(":3001", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("Connection")
-		conn, _, _, err := ws.UpgradeHTTP(r, w)
-		if err != nil {
-			log.Panicln("Upgrade HTTP error")
-			return
-		}
+	s := server.Init()
 
-		var e = events.Events{conn}
+	s.On(types.RequestPing, realtime.Ping)
+	s.On(types.RequestStartApp, realtime.StartApp)
+	s.On(types.RequestUserGet, user.Get)
 
-		go e.New()
-	}))
-
-	if err != nil {
-		log.Panicln("Server error starting")
-		return
-	}
+	s.Listen()
 }

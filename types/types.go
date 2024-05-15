@@ -7,14 +7,14 @@ const (
 	RequestPing     EventType = "ping"
 	RequestStartApp EventType = "start_app"
 	RequestBalance  EventType = "balance"
-	RequestUser     EventType = "user"
+	RequestUserGet  EventType = "user_get"
 )
 
 const (
 	ResponsePong     EventType = "pong"
 	ResponseStartApp EventType = "start_app"
 	ResponseBalance  EventType = "balance"
-	ResponseUser     EventType = "user"
+	ResponseUserGet  EventType = "user_get"
 	ResponseError    EventType = "error"
 )
 

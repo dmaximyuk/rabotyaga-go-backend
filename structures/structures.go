@@ -10,7 +10,7 @@ type EventParams struct {
 	Data  json.RawMessage `json:"data,omitempty"`
 }
 
-type User struct {
+type ResponseUserGet struct {
 	Id        uint   `json:"id,omitempty"`
 	UserId    uint   `json:"userId,omitempty"`
 	Username  string `json:"username,omitempty"`
@@ -20,7 +20,7 @@ type User struct {
 }
 
 type StartApp struct {
-	User User `json:"user,omitempty"`
+	User ResponseUserGet `json:"user,omitempty"`
 }
 
 type Error struct {
